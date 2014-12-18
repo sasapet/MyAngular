@@ -24,7 +24,9 @@ Scope.prototype.$digest = function () {
         if (newValue != oldValue)
         {
             watcher.last = newValue;
-            watcher.listenerFn(newValue, oldValue, self);
+            watcher.listenerFn(newValue,
+                (oldValue === initWatchVal ? newValue : oldValue),
+                self);
         }
       
     });
