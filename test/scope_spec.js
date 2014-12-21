@@ -204,7 +204,7 @@ describe("Scoope", function () {
             scope.$watch(
               function (scope) { return scope.number; },
               function (newValue, oldValue, scope) {
-                  scope.counter++;
+                  scope.counter++; 
               }
             );
 
