@@ -63,6 +63,7 @@ describe("parse", function () {
         expect(fn()).toEqual('abc');
     });
 
+
     it("will not parse a string with mismatching quotes", function () {
         expect(function () { parse('"abc\''); }).toThrow();
     });
@@ -76,5 +77,52 @@ describe("parse", function () {
     it("will parse a string with character escapes", function () {
         var fn = parse('"\\n\\r\\\\"');
         expect(fn()).toEqual('\n\r\\');
+    });
+
+    it("will parse a string with unicode escapes", function () {
+        var fn = parse('"\\u00A0"');
+        expect(fn()).toEqual('\u00A0');
+    });
+
+    it("will not parse a string with invalid unicode escapes", function () {
+        expect(function () { parse('"\\u00T0"'); }).toThrow();
+    });
+
+    it("will parse null", function () {
+        var fn = parse('null');
+        expect(fn()).toBe(null);
+    });
+    it("will parse true", function () {
+        var fn = parse('true');
+        expect(fn()).toBe(true);
+    });
+    it("will parse false", function () {
+        var fn = parse('false');
+        expect(fn()).toBe(false);
+    });
+
+    it("marks booleans as literal and constant", function () {
+        var fn = parse('true');
+        expect(fn.literal).toBe(true);
+        expect(fn.constant).toBe(true);
+    });
+    it("marks null as literal and constant", function () {
+        var fn = parse('null');
+        expect(fn.literal).toBe(true);
+        expect(fn.constant).toBe(true);
+    });
+    it('ignores whitespace', function () {
+        var fn = parse(' \n42 ');
+        expect(fn()).toEqual(42);
+    });
+
+    it("will parse an empty array", function () {
+        var fn = parse('[]');
+        expect(fn()).toEqual([]);
+    });
+
+    it("will parse a non-empty array", function () {
+        var fn = parse('[1, "two", [3]]');
+        expect(fn()).toEqual([1, 'two', [3]]);
     });
 });
