@@ -205,10 +205,15 @@ Parser.prototype.expect = function (e) {
 Parser.prototype.arrayDeclaration = function () {
     var elementFns = [];
     if (!this.peek(']')) {
+        do {
+            elementFns.push(this.primary());
+        } while (this.expect(','));
     }
     this.consume(']');
     return function () {
-        return [];
+        return _.map(elementFns, function (elementFn) {
+            return elementFn();
+        });
     };
 };
 Parser.prototype.consume = function (e) {
